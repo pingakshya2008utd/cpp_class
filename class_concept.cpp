@@ -24,7 +24,7 @@ class base{
     } 
     
     virtual int getval_x(){
-        cout<<"base get_X x: "<<x<<"base y: "<<y<<endl;
+        cout<<"base get_X x: "<<x<<"base y: "<<y<<" ret x:";
         return x;
     } 
     virtual int getval_y() {
@@ -47,8 +47,9 @@ class derived: public base{
     int getval_x() {
         /*used getval_not_virtual_x to access pvt variables in base class, p and q public in base class and hence can be access directly*/
         cout<<getval_not_virtual_x()<<" p:"<<p<<endl; 
+        cout<<"calling base getval_x: "<<base::getval_x(); //here we called base getval_x from derived class
         a1=7772;
-        cout<<"new a1: ";
+        cout<<"\n new a1: ";
         return a1;
     }
     
