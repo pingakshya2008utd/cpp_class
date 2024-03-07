@@ -13,6 +13,11 @@ class base{
         cout << "BASE Constructor called"<<endl;
     }
     
+    int print_vals() const{
+        cout<<"x:"<<x<<" y:"<<y<<" p:"<<p<<" q:"<<q<<endl;
+        return x+y+p+q;
+    }
+    
     int getval_not_virtual_x(){
         cout<<"not virtual base x: ";
         return x;
@@ -83,8 +88,15 @@ int main() {
     b2= new derived(51,61);
     b2->p=2222; b2->q=3333;
     b2->getval_x();   b2->getval_y();
+    int sum=b2->print_vals();
+    cout<<endl<<"sum: "<<sum;
     cout<<"\n\n-------deleting b2---------";
     delete b2;
+    
+    const base b3= base(100,200);
+   /* b3.getval_x();   b3.getval_y(); */ //will show error here since getval_x and getval_y are not const
+   int sum3=b3.print_vals(); //will not show error since print_vals is declared as const
+   cout<<endl<<"sum3: "<<sum3;
     
     cout<<endl<<"derived class pointer-> derived class object"<<endl;
     derived *d2= new derived(97,99);
