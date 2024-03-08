@@ -5,20 +5,31 @@ using namespace std;
 class base{
     int x;
     int y;
-   
+    
     public:
+    static int obj_cnt;
     int p; int q;
+   
     base(int x, int y) :x(x), y(y){
         p=1000, q=2000;
+       obj_cnt++;
         cout << "BASE Constructor called"<<endl;
+        cout<<" # of objects: "<<obj_cnt<<endl;
     }
     
+    /* static func get_obj_cnt can access only obj_cnt; not p and q, since p and q not declared as static*/
+    static int get_obj_cnt(){
+        return obj_cnt;
+    }
+    
+    /*const functions are allowed to read data variables but not modify them */
     int print_vals() const{
         cout<<"x:"<<x<<" y:"<<y<<" p:"<<p<<" q:"<<q<<endl;
         return x+y+p+q;
     }
     
     int getval_not_virtual_x(){
+      //  obj_cnt++;
         cout<<"not virtual base x: ";
         return x;
     }
@@ -38,6 +49,7 @@ class base{
     }
     
     virtual ~base(){
+         obj_cnt--;
         cout<<"base deleted"<<endl;
     }
 };
@@ -65,9 +77,14 @@ class derived: public base{
         return b1;
     }
     ~derived(){
+        obj_cnt--;
         cout<<endl<<"derived deleted"<<endl;
     }
 };
+
+
+int base::obj_cnt = 0;
+
 
 int main() {
     cout<<endl<<"---derived class----"<<endl;
@@ -104,8 +121,8 @@ int main() {
     d2->getval_x();   d2->getval_y();
     cout<<"\n\n----deleting d2-----";
     delete d2;
-     
-     
+    cout<<"number of objects: "<<base::obj_cnt;
+     cout<<"\n number of objects from static func: "<<base::get_obj_cnt();
     
     // Write C++ code here
     std::cout << "\nTry programiz.pro\n";
