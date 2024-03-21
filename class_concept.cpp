@@ -8,13 +8,32 @@ class base{
     
     public:
     static int obj_cnt;
-    int p; int q;
+    int p, q;
+    int *val;
+    
    
-    base(int x, int y) :x(x), y(y){
+    base(int x, int y, int _val=0) :x(x), y(y){
         p=1000, q=2000;
+        val= new int(_val);
        obj_cnt++;
         cout << "BASE Constructor called"<<endl;
         cout<<" # of objects: "<<obj_cnt<<endl;
+    }
+    
+    base(const base& orig){
+        val= new int(*orig.val);
+        x= orig.x; y=orig.y; p= orig.p; q=  orig.q;
+        cout << "copy Constructor called"<<endl;
+    }
+    
+    base& operator=(const base& orig){
+        if(&orig!=this){
+            delete val;
+            val= new int(*orig.val);
+            x= orig.x; y=orig.y; p= orig.p; q=  orig.q;
+            cout << "copy Constructor called"<<endl;
+        }
+        return *this;
     }
     
     /* static func get_obj_cnt can access only obj_cnt; not p and q, since p and q not declared as static*/
@@ -24,7 +43,7 @@ class base{
     
     /*const functions are allowed to read data variables but not modify them */
     int print_vals() const{
-        cout<<"x:"<<x<<" y:"<<y<<" p:"<<p<<" q:"<<q<<endl;
+        cout<<"x:"<<x<<" y:"<<y<<" p:"<<p<<" q:"<<q<<" val:"<<*val<<endl;
         return x+y+p+q;
     }
     
@@ -50,6 +69,7 @@ class base{
     
     virtual ~base(){
          obj_cnt--;
+         delete val;
         cout<<"base deleted"<<endl;
     }
 };
@@ -96,8 +116,21 @@ int main() {
     b1.getval_x();
     b1.getval_y();
    
+    cout<<"***** testing copy assignment operator****"<<endl;
+    base *c1= new base(10,20,30);
+    base *c2(c1);
+    cout<<"c2 values after copy: "<<c2->print_vals();
+    base c3(0,0,0);
+    c3=*c1;
+    cout<<"c3 values after copy: "<<c3.print_vals();
+    *c1->val= 50;
+    c1->p=8000; c1->q=9000;
+    /*if we use dynamically allocated object, changes in the orginal object is shown in the copied object. Here, if we change anything in c1, it will be reflected on c2*/
+    cout<<"c2 values after c1 val change:"<<c2->print_vals();
+    /*if we use normal object initilized in stack, changes in the original object is not shown in the copied object. Here, if we change anything in c1, it will not be shown on c3*/
+    cout<<"c3  values after c1 val change:"<<c3.print_vals();
     
-    cout<<endl<<"base class pointer-> base class object"<<endl;
+    cout<<endl<<"\nbase class pointer-> base class object"<<endl;
     base *b2= new base(31,41);
     b2->getval_x();   b2->getval_y();
     
